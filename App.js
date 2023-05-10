@@ -2,6 +2,7 @@ import { useFonts } from 'expo-font';
 // import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { RegistrationScreen } from './src/Screens/RegistrationScreen';
+import { LoginScreen } from './src/Screens/LoginScreen';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -16,7 +17,8 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <RegistrationScreen></RegistrationScreen>
+      {/* <RegistrationScreen></RegistrationScreen> */}
+      <LoginScreen></LoginScreen>
       {/* <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 36 }}>Open up App.js to start working on your app!</Text> */}
       
     </View>

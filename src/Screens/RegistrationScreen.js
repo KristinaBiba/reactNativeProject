@@ -1,22 +1,35 @@
+import { useState } from "react";
 import {
   ImageBackground,
   StyleSheet,
   Text,
   View,
   Image,
-  Button,
+  TouchableOpacity,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import BgImage from "../assets/images/bg-img/PhotoBG.jpg";
+import addSvg from "../assets/images/svg/add.svg";
 
 export const RegistrationScreen = () => {
+  const [isKeyboardShow, setIsKeyboardShow] = useState(false);
+
   return (
     <>
       <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
-        <View style={styles.form}>
-          <View>
+
+
+
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+
+        <View style={{...styles.form, marginBottom: isKeyboardShow ? -150 : 0}}>
+          <View style={styles.fotoWrap}>
             <Image style={styles.userFoto}></Image>
-            <Image></Image>
+            <TouchableOpacity style={styles.addButton} activeOpacity={0.8}>
+              <Image  source={addSvg}></Image>
+            </TouchableOpacity>
           </View>
           <Text style={styles.title}>Реєстрація</Text>
           <TextInput
@@ -25,6 +38,7 @@ export const RegistrationScreen = () => {
             autoComplete="off"
             placeholder="Логін"
             style={styles.input}
+            onFocus={()=> {setIsKeyboardShow(true)}}
           ></TextInput>
           <TextInput
             name="email"
@@ -32,34 +46,47 @@ export const RegistrationScreen = () => {
             autoComplete="off"
             placeholder="Адреса електронної пошти"
             style={styles.input}
+            onFocus={()=> {setIsKeyboardShow(true)}}
           ></TextInput>
-          <View>
+          <View style={styles.fotoWrap}>
             <TextInput
               name="password"
               type="password"
               autoComplete="off"
               placeholder="Пароль"
+              secureTextEntry={true}
               style={styles.input}
+              onFocus={()=> {setIsKeyboardShow(true)}}
             ></TextInput>
-            <Text>Показати</Text>
+            <TouchableOpacity style={styles.passwordSee}><Text>Показати</Text></TouchableOpacity>
           </View>
 
-          <Button
-            style={styles.button}
-            type="button"
-            title="Зареєструватися"
-          ></Button>
 
+          <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+            <Text style={styles.buttonText}>Зареєструватися</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity activeOpacity={0.8}>
           <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
+          </TouchableOpacity>
+          
         </View>
+          </KeyboardAvoidingView>
+
       </ImageBackground>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  image: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
   form: {
-    marginTop: "auto",
+    // flex: 1,
+    // marginTop: "auto",
+    // justifyContent: 'flex-start',
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -68,8 +95,8 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
-  image: {
-    flex: 1,
+  fotoWrap:{
+    position: 'relative',
   },
   userFoto: {
     justifyContent: "center",
@@ -81,6 +108,19 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
+  },
+  addButton: {
+    position:"absolute",
+    width: 25,
+    height: 25,
+    // fill: "white",
+    // stroke: "#FF6C00",
+    backgroundColor: "#FFFFFF",
+    borderColor: "#FF6C00",
+    borderWidth: 2,
+    top: 21,
+    left: 228,
+    borderRadius: 100,
   },
   title: {
     fontFamily: "Roboto-Medium",
@@ -100,25 +140,32 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 16,
   },
+  passwordSee:{
+    position: 'absolute',
+    right: 16,
+    top: 16,
+  },
   button: {
     marginTop: 43,
     marginBottom: 16,
     padding: 16,
     height: 50,
-    backgroundColor: '#FF6C00',
+    backgroundColor: "#FF6C00",
     borderRadius: 100,
+  },
+  buttonText: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   logIn: {
-    marginBottom: 78,   
+    marginBottom: 78,
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
-    textAlign: 'center',
-    color: '#1B4371',
+    textAlign: "center",
+    color: "#1B4371",
   },
 });
