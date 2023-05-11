@@ -9,6 +9,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import BgImage from "../assets/images/bg-img/PhotoBG.jpg";
 import addSvg from "../assets/images/svg/add.svg";
@@ -16,72 +18,94 @@ import addSvg from "../assets/images/svg/add.svg";
 export const RegistrationScreen = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
+  const keyboardHidden = () => {
+    setIsKeyboardShow(false);
+    Keyboard.dismiss();
+  };
+
   return (
-    <>
-      <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
+    <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
 
 
+          <View
+            style={{ ...styles.form, marginBottom: isKeyboardShow ? -207 : 0  }}
+          >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <TouchableWithoutFeedback onPress={keyboardHidden}>
+              <>
+            <View style={styles.fotoWrap}>
+              <Image style={styles.userFoto}></Image>
+              <TouchableOpacity style={styles.addButton} activeOpacity={0.8}>
+                <Image source={require('../assets/images/svg/add.svg')} style={{width:25, height:25}}></Image>
+              </TouchableOpacity>
+            </View>
 
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <Text style={styles.title}>Реєстрація</Text>
+            
+            <TextInput
+              name="name"
+              type="text"
+              autoComplete="off"
+              placeholder="Логін"
+              style={styles.input}
+              onFocus={() => {
+                setIsKeyboardShow(true);
+              }}
+            ></TextInput>
+            <TextInput
+              name="email"
+              type="email"
+              autoComplete="off"
+              placeholder="Адреса електронної пошти"
+              style={styles.input}
+              onFocus={() => {
+                setIsKeyboardShow(true);
+              }}
+            ></TextInput>
+            <View style={styles.fotoWrap}>
+              <TextInput
+                name="password"
+                type="password"
+                autoComplete="off"
+                placeholder="Пароль"
+                secureTextEntry={true}
+                style={styles.input}
+                onFocus={() => {
+                  setIsKeyboardShow(true);
+                }}
+              ></TextInput>
+              <TouchableOpacity style={styles.passwordSee}>
+                <Text>Показати</Text>
+              </TouchableOpacity>
+            </View>
+            </>
+            </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
 
-        <View style={{...styles.form, marginBottom: isKeyboardShow ? -150 : 0}}>
-          <View style={styles.fotoWrap}>
-            <Image style={styles.userFoto}></Image>
-            <TouchableOpacity style={styles.addButton} activeOpacity={0.8}>
-              <Image  source={addSvg}></Image>
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.8}
+              onPress={keyboardHidden}
+            >
+              <Text style={styles.buttonText}>Зареєструватися</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity activeOpacity={0.8}>
+              <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.title}>Реєстрація</Text>
-          <TextInput
-            name="name"
-            type="text"
-            autoComplete="off"
-            placeholder="Логін"
-            style={styles.input}
-            onFocus={()=> {setIsKeyboardShow(true)}}
-          ></TextInput>
-          <TextInput
-            name="email"
-            type="email"
-            autoComplete="off"
-            placeholder="Адреса електронної пошти"
-            style={styles.input}
-            onFocus={()=> {setIsKeyboardShow(true)}}
-          ></TextInput>
-          <View style={styles.fotoWrap}>
-            <TextInput
-              name="password"
-              type="password"
-              autoComplete="off"
-              placeholder="Пароль"
-              secureTextEntry={true}
-              style={styles.input}
-              onFocus={()=> {setIsKeyboardShow(true)}}
-            ></TextInput>
-            <TouchableOpacity style={styles.passwordSee}><Text>Показати</Text></TouchableOpacity>
-          </View>
 
-
-          <TouchableOpacity style={styles.button} activeOpacity={0.8}>
-            <Text style={styles.buttonText}>Зареєструватися</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity activeOpacity={0.8}>
-          <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
-          </TouchableOpacity>
-          
-        </View>
-          </KeyboardAvoidingView>
 
       </ImageBackground>
-    </>
   );
 };
 
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   form: {
     // flex: 1,
@@ -95,11 +119,15 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
-  fotoWrap:{
-    position: 'relative',
+  fotoWrap: {
+    position: "relative",
+    justifyContent: "center",
+    // alignItems: 'center',
+    // borderWidth: 3,
+    // borderColor: 'black',
   },
   userFoto: {
-    justifyContent: "center",
+    // justifyContent: "center",
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: -60,
@@ -110,7 +138,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   addButton: {
-    position:"absolute",
+    position: "absolute",
     width: 25,
     height: 25,
     // fill: "white",
@@ -140,8 +168,8 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 16,
   },
-  passwordSee:{
-    position: 'absolute',
+  passwordSee: {
+    position: "absolute",
     right: 16,
     top: 16,
   },

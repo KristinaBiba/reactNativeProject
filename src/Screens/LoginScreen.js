@@ -8,21 +8,30 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import BgImage from "../assets/images/bg-img/PhotoBG.jpg";
 
 export const LoginScreen = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
+  const keyboardHidden = () => {
+    setIsKeyboardShow(false);
+    Keyboard.dismiss();
+  };
+
   return (
     <>
       <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
+        <View
+          style={{ ...styles.form, marginBottom: isKeyboardShow ? -179 : 0  }}
+        >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <View
-            style={{ ...styles.form, marginBottom: isKeyboardShow ? -190 : 0 }}
-          >
+          <TouchableWithoutFeedback onPress={keyboardHidden}>
+              <>
             
             <Text style={styles.title}>Увійти</Text>
             
@@ -52,8 +61,11 @@ export const LoginScreen = () => {
                 <Text>Показати</Text>
               </TouchableOpacity>
             </View>
+            </>
+            </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
 
-            <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+            <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={keyboardHidden}>
               <Text style={styles.buttonText}>Увійти</Text>
             </TouchableOpacity>
 
@@ -61,7 +73,7 @@ export const LoginScreen = () => {
               <Text style={styles.logIn}>Немає аккаунта? Зареєструватися</Text>
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+     
       </ImageBackground>
     </>
   );
