@@ -13,7 +13,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import BgImage from "../assets/images/bg-img/PhotoBG.jpg";
-import addSvg from "../assets/images/svg/add.svg";
+import addSvg from "../assets/images/svg/add.png";
 
 export const RegistrationScreen = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
@@ -24,26 +24,26 @@ export const RegistrationScreen = () => {
   };
 
   return (
-    <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
-
-
-          <View
-            style={{ ...styles.form, marginBottom: isKeyboardShow ? -207 : 0  }}
-          >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <TouchableWithoutFeedback onPress={keyboardHidden}>
+      <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
+        <View
+          style={{ ...styles.form, marginBottom: isKeyboardShow ? -207 : 0 }}
         >
-            <TouchableWithoutFeedback onPress={keyboardHidden}>
-              <>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
             <View style={styles.fotoWrap}>
               <Image style={styles.userFoto}></Image>
               <TouchableOpacity style={styles.addButton} activeOpacity={0.8}>
-                <Image source={require('../assets/images/svg/add.svg')} style={{width:25, height:25}}></Image>
+                <Image
+                  source={addSvg}
+                  style={{ width: 25, height: 25 }}
+                ></Image>
               </TouchableOpacity>
             </View>
 
             <Text style={styles.title}>Реєстрація</Text>
-            
+
             <TextInput
               name="name"
               type="text"
@@ -64,7 +64,7 @@ export const RegistrationScreen = () => {
                 setIsKeyboardShow(true);
               }}
             ></TextInput>
-            <View style={styles.fotoWrap}>
+            <View style={styles.wrap}>
               <TextInput
                 name="password"
                 type="password"
@@ -80,25 +80,22 @@ export const RegistrationScreen = () => {
                 <Text>Показати</Text>
               </TouchableOpacity>
             </View>
-            </>
-            </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
 
-            <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.8}
-              onPress={keyboardHidden}
-            >
-              <Text style={styles.buttonText}>Зареєструватися</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.8}
+            onPress={keyboardHidden}
+          >
+            <Text style={styles.buttonText}>Зареєструватися</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.8}>
-              <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
-            </TouchableOpacity>
-          </View>
-
-
+          <TouchableOpacity activeOpacity={0.8}>
+            <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -108,9 +105,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   form: {
-    // flex: 1,
-    // marginTop: "auto",
-    // justifyContent: 'flex-start',
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -121,17 +115,14 @@ const styles = StyleSheet.create({
   },
   fotoWrap: {
     position: "relative",
-    justifyContent: "center",
-    // alignItems: 'center',
-    // borderWidth: 3,
-    // borderColor: 'black',
-  },
-  userFoto: {
-    // justifyContent: "center",
-    marginLeft: "auto",
-    marginRight: "auto",
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    justifyContent: 'center',
     marginTop: -60,
     marginBottom: 32,
+    width: 120,
+  },
+  userFoto: {
     width: 120,
     height: 120,
     backgroundColor: "#F6F6F6",
@@ -141,14 +132,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 25,
     height: 25,
-    // fill: "white",
-    // stroke: "#FF6C00",
-    backgroundColor: "#FFFFFF",
-    borderColor: "#FF6C00",
-    borderWidth: 2,
-    top: 21,
-    left: 228,
-    borderRadius: 100,
+    bottom: 15,
+    right: -12,
   },
   title: {
     fontFamily: "Roboto-Medium",
@@ -167,11 +152,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     height: 50,
     padding: 16,
+    fontSize: 16,
+    lineHeight: 19,
+    fontFamily: "Roboto-Regular",
   },
   passwordSee: {
     position: "absolute",
     right: 16,
     top: 16,
+  },
+  wrap: {
+    position: "relative",
+    justifyContent: "center",
   },
   button: {
     marginTop: 43,

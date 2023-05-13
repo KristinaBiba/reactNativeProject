@@ -22,19 +22,16 @@ export const LoginScreen = () => {
   };
 
   return (
-    <>
+    <TouchableWithoutFeedback onPress={keyboardHidden}>
       <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
         <View
-          style={{ ...styles.form, marginBottom: isKeyboardShow ? -179 : 0  }}
+          style={{ ...styles.form, marginBottom: isKeyboardShow ? -179 : 0 }}
         >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <TouchableWithoutFeedback onPress={keyboardHidden}>
-              <>
-            
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
             <Text style={styles.title}>Увійти</Text>
-            
+
             <TextInput
               name="email"
               type="email"
@@ -61,21 +58,22 @@ export const LoginScreen = () => {
                 <Text>Показати</Text>
               </TouchableOpacity>
             </View>
-            </>
-            </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
 
-            <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={keyboardHidden}>
-              <Text style={styles.buttonText}>Увійти</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.8}
+            onPress={keyboardHidden}
+          >
+            <Text style={styles.buttonText}>Увійти</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.8}>
-              <Text style={styles.logIn}>Немає аккаунта? Зареєструватися</Text>
-            </TouchableOpacity>
-          </View>
-     
+          <TouchableOpacity activeOpacity={0.8}>
+            <Text style={styles.logIn}>Немає аккаунта? Зареєструватися</Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
-    </>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -85,9 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   form: {
-    // flex: 0.5,
     marginTop: "auto",
-    // justifyContent: 'flex-start',
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -96,7 +92,6 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
-  
   title: {
     fontFamily: "Roboto-Medium",
     color: "#212121",
