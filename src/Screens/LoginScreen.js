@@ -21,6 +21,13 @@ export const LoginScreen = () => {
     Keyboard.dismiss();
   };
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleButtonClick = () => {
+    console.log(`Email: ${email}, Password: ${password}`);
+  }
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
       <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
@@ -38,9 +45,11 @@ export const LoginScreen = () => {
               autoComplete="off"
               placeholder="Адреса електронної пошти"
               style={styles.input}
+              value={email}
               onFocus={() => {
                 setIsKeyboardShow(true);
               }}
+              onChangeText={setEmail}
             ></TextInput>
             <View style={styles.fotoWrap}>
               <TextInput
@@ -50,9 +59,11 @@ export const LoginScreen = () => {
                 placeholder="Пароль"
                 secureTextEntry={true}
                 style={styles.input}
+                value={password}
                 onFocus={() => {
                   setIsKeyboardShow(true);
                 }}
+                onChangeText={setPassword}
               ></TextInput>
               <TouchableOpacity style={styles.passwordSee}>
                 <Text>Показати</Text>
@@ -65,7 +76,7 @@ export const LoginScreen = () => {
             activeOpacity={0.8}
             onPress={keyboardHidden}
           >
-            <Text style={styles.buttonText}>Увійти</Text>
+            <Text style={styles.buttonText} onPress={handleButtonClick}>Увійти</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.8}>

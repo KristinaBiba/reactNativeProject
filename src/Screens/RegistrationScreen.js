@@ -23,6 +23,14 @@ export const RegistrationScreen = () => {
     Keyboard.dismiss();
   };
 
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleButtonClick = () => {
+    console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
+  }
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
       <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
@@ -50,9 +58,11 @@ export const RegistrationScreen = () => {
               autoComplete="off"
               placeholder="Логін"
               style={styles.input}
+              value={name}
               onFocus={() => {
                 setIsKeyboardShow(true);
               }}
+              onChangeText={setName}
             ></TextInput>
             <TextInput
               name="email"
@@ -60,9 +70,11 @@ export const RegistrationScreen = () => {
               autoComplete="off"
               placeholder="Адреса електронної пошти"
               style={styles.input}
+              value={email}
               onFocus={() => {
                 setIsKeyboardShow(true);
               }}
+              onChangeText={setEmail}
             ></TextInput>
             <View style={styles.wrap}>
               <TextInput
@@ -72,9 +84,11 @@ export const RegistrationScreen = () => {
                 placeholder="Пароль"
                 secureTextEntry={true}
                 style={styles.input}
+                value={password}  
                 onFocus={() => {
                   setIsKeyboardShow(true);
                 }}
+                onChangeText={setPassword}
               ></TextInput>
               <TouchableOpacity style={styles.passwordSee}>
                 <Text>Показати</Text>
@@ -87,7 +101,7 @@ export const RegistrationScreen = () => {
             activeOpacity={0.8}
             onPress={keyboardHidden}
           >
-            <Text style={styles.buttonText}>Зареєструватися</Text>
+            <Text style={styles.buttonText} onPress={handleButtonClick}>Зареєструватися</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.8}>
