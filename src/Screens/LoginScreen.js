@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
 import {
   ImageBackground,
   StyleSheet,
@@ -27,6 +28,8 @@ export const LoginScreen = () => {
   const handleButtonClick = () => {
     console.log(`Email: ${email}, Password: ${password}`);
   }
+
+  const navigation = useNavigation();
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
@@ -79,7 +82,7 @@ export const LoginScreen = () => {
             <Text style={styles.buttonText} onPress={handleButtonClick}>Увійти</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.8}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Registration")}>
             <Text style={styles.logIn}>Немає аккаунта? Зареєструватися</Text>
           </TouchableOpacity>
         </View>
