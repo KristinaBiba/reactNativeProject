@@ -1,18 +1,19 @@
 import { StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
-import LogOut from "../assets/images/svg/log-out.png";
+import { useNavigation } from '@react-navigation/native';
+
+import LogOut from "../assets/images/svg/log-out.svg";
 import UserFoto from "../assets/images/user-foto/Rectangle22.jpg";
-import User from "../assets/images/svg/user.png";
-import Grid from "../assets/images/svg/grid.png";
-import Union from "../assets/images/svg/Union.png";
 
 export const PostScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.body}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Публікації</Text>
 
-        <TouchableOpacity style={styles.logOutBtn}>
-          <Image source={LogOut} />
+        <TouchableOpacity style={styles.logOutBtn} onPress={() => navigation.navigate("Login")}>
+          <LogOut />
         </TouchableOpacity>
       </View>
 
@@ -29,19 +30,6 @@ export const PostScreen = () => {
         </View>
       </View>
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.btn}>
-          <Image source={Grid} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.btnAdd}>
-          <Image source={Union} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.btn}>
-          <Image source={User} />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -49,6 +37,7 @@ export const PostScreen = () => {
 const styles = StyleSheet.create({
   body: {
     height: '100%',
+    backgroundColor: '#FFFFFF',
   },
   header: {
     position: "relative",
@@ -104,28 +93,5 @@ const styles = StyleSheet.create({
   },
   publics: {
 
-  },
-  footer: {
-    marginTop: -80,
-    height: 80,
-    paddingTop: 9,
-    borderTopColor: "#BDBDBD",
-    borderTopWidth: 1,
-    justifyContent: "space-around",
-    flexDirection: "row",
-    paddingHorizontal: 50,
-  },
-  btn: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-  },
-  btnAdd: {
-    width: 70,
-    height: 40,
-    backgroundColor: "#FF6C00",
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import {
-  ImageBackground,
   StyleSheet,
   Text,
   View,
@@ -12,7 +11,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import BgImage from "../assets/images/bg-img/PhotoBG.jpg";
+import { Background } from "../components/Background";
+
 
 export const LoginScreen = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
@@ -27,13 +27,14 @@ export const LoginScreen = () => {
 
   const handleButtonClick = () => {
     console.log(`Email: ${email}, Password: ${password}`);
+    navigation.navigate("Home");
   }
 
   const navigation = useNavigation();
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
-      <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
+      <Background>
         <View
           style={{ ...styles.form, marginBottom: isKeyboardShow ? -179 : 0 }}
         >
@@ -86,16 +87,12 @@ export const LoginScreen = () => {
             <Text style={styles.logIn}>Немає аккаунта? Зареєструватися</Text>
           </TouchableOpacity>
         </View>
-      </ImageBackground>
+      </Background>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
   form: {
     marginTop: "auto",
     backgroundColor: "#FFFFFF",

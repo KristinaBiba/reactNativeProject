@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import {
-  ImageBackground,
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
@@ -13,8 +11,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import BgImage from "../assets/images/bg-img/PhotoBG.jpg";
-import addSvg from "../assets/images/svg/add.png";
+
+import { Background } from "../components/Background";
+import { UserFoto } from "../components/UserFoto";
 
 export const RegistrationScreen = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
@@ -30,29 +29,21 @@ export const RegistrationScreen = () => {
 
   const handleButtonClick = () => {
     console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
+    navigation.navigate("Home");
   }
-
   
   const navigation = useNavigation();
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
-      <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
+      <Background>
         <View
           style={{ ...styles.form, marginBottom: isKeyboardShow ? -207 : 0 }}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <View style={styles.fotoWrap}>
-              <Image style={styles.userFoto}></Image>
-              <TouchableOpacity style={styles.addButton} activeOpacity={0.8}>
-                <Image
-                  source={addSvg}
-                  style={{ width: 25, height: 25 }}
-                ></Image>
-              </TouchableOpacity>
-            </View>
+            <UserFoto/>
 
             <Text style={styles.title}>Реєстрація</Text>
 
@@ -112,16 +103,12 @@ export const RegistrationScreen = () => {
             <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
           </TouchableOpacity>
         </View>
-      </ImageBackground>
+      </Background>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
   form: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
@@ -130,28 +117,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 0,
     paddingLeft: 16,
     paddingRight: 16,
-  },
-  fotoWrap: {
-    position: "relative",
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    justifyContent: 'center',
-    marginTop: -60,
-    marginBottom: 32,
-    width: 120,
-  },
-  userFoto: {
-    width: 120,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  addButton: {
-    position: "absolute",
-    width: 25,
-    height: 25,
-    bottom: 15,
-    right: -12,
   },
   title: {
     fontFamily: "Roboto-Medium",

@@ -1,17 +1,35 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Background } from "../components/Background";
+import { UserFoto } from "../components/UserFoto";
+
+import LogOut from "../assets/images/svg/log-out.svg";
 
 export const ProfileScreen = () => {
   return (
-    <View style={styles.form}>
-      <Text style={styles.title}>ProfileScreen</Text>
-    </View>
+    <Background>
+      <View style={styles.form}>
+        <UserFoto />
+        <TouchableOpacity style={styles.logOutBtn} onPress={() => navigation.navigate("Login")}>
+          <LogOut />
+        </TouchableOpacity>
+        <Text style={styles.title}>Natali Romanova</Text>
+      </View>
+    </Background>
   );
 };
 
 const styles = StyleSheet.create({
   form: {
-    flex: 1,
-    
+    position: 'relative',
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    paddingLeft: 16,
+    paddingRight: 16,
+    marginTop: 60,
+    flex:0.9,
   },
   title: {
     fontFamily: "Roboto-Medium",
@@ -20,6 +38,14 @@ const styles = StyleSheet.create({
     lineHeight: 35.16,
     textAlign: "center",
     marginBottom: 33,
-    marginTop: 32,
+    // marginTop: 32,
+  },
+  logOutBtn: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'black',
+    width: 300,
+    zIndex: 1000,
   },
 });
