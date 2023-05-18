@@ -55,6 +55,7 @@ export const Home = () => {
             alignItems: "center",
             justifyContent: "center",
           },
+          tabBarStyle: {display: 'none'},
           tabBarIcon: ({ focused, size, color }) => (
             <Union width={13} height={13} />
           ),

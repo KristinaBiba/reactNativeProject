@@ -1,10 +1,13 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+
 import { Background } from "../components/Background";
 import { UserFoto } from "../components/UserFoto";
 
 import LogOut from "../assets/images/svg/log-out.svg";
 
 export const ProfileScreen = () => {
+  const navigation = useNavigation();
   return (
     <Background>
       <View style={styles.form}>
@@ -42,10 +45,9 @@ const styles = StyleSheet.create({
   },
   logOutBtn: {
     position: "absolute",
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'black',
-    width: 300,
-    zIndex: 1000,
+    right: 19,
+    top: 21,
+    width: 24,
+    // zIndex: 1000,
   },
 });
