@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -9,14 +9,16 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   TextInput,
+  Image,
 } from "react-native";
+import { Camera } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
 
 import ArrowLeft from "../assets/images/svg/arrow-left.svg";
 import CameraBlack from "../assets/images/svg/camera_alt-black.svg";
 import MapPin from "../assets/images/svg/map-pin.svg";
 import Trash from "../assets/images/svg/trash.svg";
-
 
 export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   const navigation = useNavigation();
@@ -28,6 +30,7 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
     Keyboard.dismiss();
   };
 
+  const [postFoto, setPostFoto] = useState("");
   const [postName, setPostName] = useState("");
   const [postLocation, setPostLocation] = useState("");
 
@@ -35,6 +38,32 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
     keyboardHidden();
     console.log(`Post name: ${postName}, Email: ${postLocation}`);
     navigation.navigate("Home");
+  };
+
+  const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
+  const handleDel = () => {
+    setPostFoto("");
+    setPostName("");
+    setPostLocation("");
   };
 
   return (
@@ -52,14 +81,51 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
           </View>
 
           <View style={styles.mainWrap}>
-
-            <View style={styles.fotoWrap}>
-              <TouchableOpacity style={styles.cameraBtn}>
-                <CameraBlack />
-              </TouchableOpacity>
+            <View style={styles.cameraWrap}>
+              <Camera style={styles.fotoWrap} type={type} ref={setCameraRef}>
+                {postFoto && (
+                  <View style={styles.foto}>
+                    <Image
+                      source={{ uri: postFoto }}
+                      style={{ height: 240, width: "100%" }}
+                    />
+                  </View>
+                )}
+                {/* <View > */}
+                {/* <TouchableOpacity
+                  style={styles.cameraBtn}
+                    
+                    onPress={() => {
+                      setType(
+                        type === Camera.Constants.Type.back
+                          ? Camera.Constants.Type.front
+                          : Camera.Constants.Type.back
+                      );
+                    }}
+                  >
+                    
+                  </TouchableOpacity> */}
+                <TouchableOpacity
+                  style={styles.cameraBtn}
+                  onPress={async () => {
+                    if (cameraRef) {
+                      const { uri } = await cameraRef.takePictureAsync();
+                      setPostFoto(uri);
+                      await MediaLibrary.createAssetAsync(uri);
+                    }
+                  }}
+                >
+                  <CameraBlack />
+                </TouchableOpacity>
+                {/* </View> */}
+              </Camera>
             </View>
             <View style={styles.fotoLabel}>
-              <Text style={styles.fotoLabelText}>Завантажте фото</Text>
+              {postFoto!=='' ? (
+                <Text style={styles.fotoLabelText}>Редагувати фото</Text>
+              ) : (
+                <Text style={styles.fotoLabelText}>Завантажте фото</Text>
+              )}
             </View>
 
             <TextInput
@@ -74,21 +140,21 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
               }}
               onChangeText={setPostName}
             ></TextInput>
-            
+
             <View style={styles.inputWrap}>
-             <TextInput
-              name="postLocation"
-              type="text"
-              autoComplete="off"
-              placeholder="Місцевість..."
-              style={{...styles.input, paddingLeft: 28}}
-              value={postLocation}
-              onFocus={() => {
-                setIsKeyboardShow(true);
-              }}
-              onChangeText={setPostLocation}
-            ></TextInput>
-            <MapPin style={styles.svgLocation}/>
+              <TextInput
+                name="postLocation"
+                type="text"
+                autoComplete="off"
+                placeholder="Місцевість..."
+                style={{ ...styles.input, paddingLeft: 28 }}
+                value={postLocation}
+                onFocus={() => {
+                  setIsKeyboardShow(true);
+                }}
+                onChangeText={setPostLocation}
+              ></TextInput>
+              <MapPin style={styles.svgLocation} />
             </View>
 
             <TouchableOpacity
@@ -99,18 +165,19 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
               <Text style={styles.buttonText} onPress={handleButtonClick}>
                 Опублікувати
               </Text>
-            </TouchableOpacity> 
-
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
 
         <View style={styles.footer}>
-        <TouchableOpacity style={styles.delBtn} activeOpacity={0.8}>
-
-          <Trash />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.delBtn}
+            activeOpacity={0.8}
+            onPress={handleDel}
+          >
+            <Trash />
+          </TouchableOpacity>
         </View>
-
       </View>
     </TouchableWithoutFeedback>
   );
@@ -120,7 +187,7 @@ const styles = StyleSheet.create({
   body: {
     height: "100%",
     backgroundColor: "#FFFFFF",
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
   },
   header: {
     position: "relative",
@@ -148,10 +215,16 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     // paddingBottom: 80,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
+  },
+  cameraWrap: {
+    width: "100%",
+    height: 240,
+    borderRadius: 8,
+    marginBottom: 8,
   },
   fotoWrap: {
-    width: "100%",
+    position: "relative",
     height: 240,
     backgroundColor: "#F6F6F6",
     borderWidth: 1,
@@ -160,9 +233,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 8,
+  },
+  foto: {
+    width: "100%",
+    height: 240,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "#E8E8E8",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
   cameraBtn: {
+    position: "absolute",
     width: 60,
     height: 60,
     backgroundColor: "#FFFFFF",
@@ -190,10 +273,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     fontFamily: "Roboto-Regular",
-    color: '#212121',
+    color: "#212121",
   },
   inputWrap: {
-    position: 'relative',
+    position: "relative",
     marginBottom: 32,
     height: 35,
   },
@@ -216,14 +299,14 @@ const styles = StyleSheet.create({
     color: "#BDBDBD",
   },
   footer: {
-    position: 'absolute',
-    width: '100%',
+    position: "absolute",
+    width: "100%",
     bottom: 0,
     height: 80,
     paddingTop: 9,
     paddingBottom: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   delBtn: {
     width: 70,
@@ -232,5 +315,5 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });
