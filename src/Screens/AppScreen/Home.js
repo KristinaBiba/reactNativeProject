@@ -4,9 +4,9 @@ import { PostScreen } from "./PostsScreen";
 import { CreatePostsScreen } from "./CreatePostsScreen";
 import { ProfileScreen } from "./ProfileScreen";
 
-import User from "../assets/images/svg/user.svg";
-import Grid from "../assets/images/svg/grid.svg";
-import Union from "../assets/images/svg/Union.svg";
+import User from "../../assets/images/svg/user.svg";
+import Grid from "../../assets/images/svg/grid.svg";
+import Union from "../../assets/images/svg/Union.svg";
 
 const MainTab = createBottomTabNavigator();
 
@@ -28,10 +28,7 @@ export const Home = () => {
           alignItems: "center",
         },
       })}
-      tabBarOptions={{
-        activeTintColor: "rgba(255, 255, 255, 1)",
-        inactiveTintColor: "rgba(33, 33, 33, 0.8)",
-      }}
+      
     >
       <MainTab.Screen
         options={{

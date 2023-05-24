@@ -1,11 +1,24 @@
+import { useState,useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
-import LogOut from "../assets/images/svg/log-out.svg";
-import UserFoto from "../assets/images/user-foto/Rectangle22.jpg";
+import LogOut from "../../assets/images/svg/log-out.svg";
+import UserFoto from "../../assets/images/user-foto/Rectangle22.jpg";
 
-export const PostScreen = () => {
+export const PostScreen = ({route}) => {
+
   const navigation = useNavigation();
+
+  const [posts, setPosts] = useState([]);
+  
+  useEffect(() => {
+    if (route.params) {
+      setPosts((prevState) => [...prevState, route.params]);
+    }
+  }, [route.params]);
+
+  console.log(posts);
+
 
   return (
     <View style={styles.body}>
@@ -26,9 +39,18 @@ export const PostScreen = () => {
           </View>
         </View>
         <View style={styles.publics}>
-
+        {posts.length > 0 && <View>
+      <Image
+              source={{ uri: posts[0].postFoto }}
+              style={{ width: 350, height: 200 }}
+            />
+        <Text>{posts[0].postName}</Text>
+      </View>}
         </View>
       </View>
+
+     
+
 
     </View>
   );

@@ -1,10 +1,10 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
-import { Background } from "../components/Background";
-import { UserFoto } from "../components/UserFoto";
+import { Background } from "../../components/Background";
+import { UserFoto } from "../../components/UserFoto";
 
-import LogOut from "../assets/images/svg/log-out.svg";
+import LogOut from "../../assets/images/svg/log-out.svg";
 
 export const ProfileScreen = () => {
   const navigation = useNavigation();

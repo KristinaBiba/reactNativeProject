@@ -8,13 +8,14 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
   Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
-import { Background } from "../components/Background";
 
+import { Background } from "../../components/Background";
+import { UserFoto } from "../../components/UserFoto";
 
-export const LoginScreen = () => {
+export const RegistrationScreen = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
   const keyboardHidden = () => {
@@ -22,27 +23,47 @@ export const LoginScreen = () => {
     Keyboard.dismiss();
   };
 
+  const [passwordInputSecure, setPasswordInputSecure] = useState(true);
+  const togglePasswordSee = () => {
+      setPasswordInputSecure(!passwordInputSecure);
+  };
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleButtonClick = () => {
-    console.log(`Email: ${email}, Password: ${password}`);
+    console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
     navigation.navigate("Home");
   }
-
+  
   const navigation = useNavigation();
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
       <Background>
         <View
-          style={{ ...styles.form, marginBottom: isKeyboardShow ? -179 : 0 }}
+          style={{ ...styles.form, marginBottom: isKeyboardShow ? -207 : 0 }}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <Text style={styles.title}>Увійти</Text>
+            <UserFoto/>
 
+            <Text style={styles.title}>Реєстрація</Text>
+
+            <TextInput
+              name="name"
+              type="text"
+              autoComplete="off"
+              placeholder="Логін"
+              style={styles.input}
+              value={name}
+              onFocus={() => {
+                setIsKeyboardShow(true);
+              }}
+              onChangeText={setName}
+            ></TextInput>
             <TextInput
               name="email"
               type="email"
@@ -55,21 +76,21 @@ export const LoginScreen = () => {
               }}
               onChangeText={setEmail}
             ></TextInput>
-            <View style={styles.fotoWrap}>
+            <View style={styles.wrap}>
               <TextInput
                 name="password"
                 type="password"
                 autoComplete="off"
                 placeholder="Пароль"
-                secureTextEntry={true}
+                secureTextEntry={passwordInputSecure}
                 style={styles.input}
-                value={password}
+                value={password}  
                 onFocus={() => {
                   setIsKeyboardShow(true);
                 }}
                 onChangeText={setPassword}
               ></TextInput>
-              <TouchableOpacity style={styles.passwordSee}>
+              <TouchableOpacity style={styles.passwordSee} onPress={togglePasswordSee}>
                 <Text>Показати</Text>
               </TouchableOpacity>
             </View>
@@ -80,11 +101,11 @@ export const LoginScreen = () => {
             activeOpacity={0.8}
             onPress={keyboardHidden}
           >
-            <Text style={styles.buttonText} onPress={handleButtonClick}>Увійти</Text>
+            <Text style={styles.buttonText} onPress={handleButtonClick}>Зареєструватися</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Registration")}>
-            <Text style={styles.logIn}>Немає аккаунта? Зареєструватися</Text>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
           </TouchableOpacity>
         </View>
       </Background>
@@ -94,7 +115,6 @@ export const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   form: {
-    marginTop: "auto",
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -110,7 +130,6 @@ const styles = StyleSheet.create({
     lineHeight: 35.16,
     textAlign: "center",
     marginBottom: 33,
-    marginTop: 32,
   },
   input: {
     backgroundColor: "#F6F6F6",
@@ -121,11 +140,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     height: 50,
     padding: 16,
+    fontSize: 16,
+    lineHeight: 19,
+    fontFamily: "Roboto-Regular",
   },
   passwordSee: {
     position: "absolute",
     right: 16,
     top: 16,
+  },
+  wrap: {
+    position: "relative",
+    justifyContent: "center",
   },
   button: {
     marginTop: 43,
