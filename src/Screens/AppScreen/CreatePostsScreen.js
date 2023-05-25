@@ -14,6 +14,7 @@ import {
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 import ArrowLeft from "../../assets/images/svg/arrow-left.svg";
 import CameraBlack from "../../assets/images/svg/camera_alt-black.svg";
@@ -24,27 +25,30 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   const navigation = useNavigation();
 
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  const [location, setLocation] = useState(null);
+
+  const [postFoto, setPostFoto] = useState("");
+  const [postName, setPostName] = useState("");
+  const [postLocation, setPostLocation] = useState("");
 
   const keyboardHidden = () => {
     setIsKeyboardShow(false);
     Keyboard.dismiss();
   };
 
-  const [postFoto, setPostFoto] = useState("");
-  const [postName, setPostName] = useState("");
-  const [postLocation, setPostLocation] = useState("");
 
   const handlePublic = () => {
     if (postFoto && postLocation && postName) {
       keyboardHidden();
-      navigation.navigate("Posts", { postFoto, postName, postLocation });
+      navigation.navigate("Posts", {screen: "DefaultPostScreen", params: { postFoto, postName, postLocation, location }} );
     }
     return;
   };
 
-  const [hasPermission, setHasPermission] = useState(null);
-  const [cameraRef, setCameraRef] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
 
   useEffect(() => {
     (async () => {
@@ -61,6 +65,27 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
+  
+
+  const takeFoto = async () => {
+      // if (postFoto) {
+      //   setPostFoto("");
+      //   return;
+      // }
+      if (cameraRef) {
+        const { uri } = await cameraRef.takePictureAsync();
+        setPostFoto(uri);
+        await MediaLibrary.createAssetAsync(uri);
+        const locate = await Location.getCurrentPositionAsync();
+        console.log("latitude", location.coords.latitude);
+        console.log("longitude", location.coords.longitude);
+        const coords = {
+          latitude: locate.coords.latitude,
+          longitude: locate.coords.longitude,
+        };
+        setLocation(coords);
+    }
+  }
 
   const handleDel = () => {
     setPostFoto("");
@@ -68,6 +93,8 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
     setPostLocation("");
     console.log("cameraRef", cameraRef);
   };
+
+
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
@@ -96,17 +123,7 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
                 )}
                 <TouchableOpacity
                   style={styles.cameraBtn}
-                  onPress={async () => {
-                    if (postFoto) {
-                      setPostFoto("");
-                      return;
-                    }
-                    if (cameraRef) {
-                      const { uri } = await cameraRef.takePictureAsync();
-                      setPostFoto(uri);
-                      await MediaLibrary.createAssetAsync(uri);
-                    }
-                  }}
+                  onPress={takeFoto}
                 >
                   <CameraBlack />
                 </TouchableOpacity>
