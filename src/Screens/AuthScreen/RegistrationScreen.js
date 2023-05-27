@@ -34,7 +34,7 @@ export const RegistrationScreen = () => {
 
   const handleButtonClick = () => {
     console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
-    navigation.navigate("Home");
+    navigation.navigate("Posts");
   }
   
   const navigation = useNavigation();
@@ -99,9 +99,9 @@ export const RegistrationScreen = () => {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={0.8}
-            onPress={keyboardHidden}
+            onPress={handleButtonClick}
           >
-            <Text style={styles.buttonText} onPress={handleButtonClick}>Зареєструватися</Text>
+            <Text style={styles.buttonText} >Зареєструватися</Text>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Login")}>

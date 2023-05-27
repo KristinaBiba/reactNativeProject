@@ -7,7 +7,6 @@ import UserFoto from "../../assets/images/user-foto/Rectangle22.jpg";
 import { Post } from "../../components/Post";
 
 export const DefaultScreen = ({route}) => {
-    // console.log(route.params);
 
   const navigation = useNavigation();
 
@@ -18,9 +17,6 @@ export const DefaultScreen = ({route}) => {
       setPosts((prevState) => [...prevState, route.params]);
     }
   }, [route.params]);
-
-//   console.log(posts);
-
 
   return (
     <View style={styles.body}>

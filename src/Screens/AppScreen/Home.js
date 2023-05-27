@@ -1,12 +1,12 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { PostScreen } from "./PostsScreen";
 import { CreatePostsScreen } from "./CreatePostsScreen";
 import { ProfileScreen } from "./ProfileScreen";
+import { DefaultScreen } from "../PostScreen/DefaultScreen";
 
 import User from "../../assets/images/svg/user.svg";
 import Grid from "../../assets/images/svg/grid.svg";
-import Union from "../../assets/images/svg/Union.svg";
+import Union from "../../assets/images/svg/union.svg";
 
 const MainTab = createBottomTabNavigator();
 
@@ -38,8 +38,8 @@ export const Home = () => {
             <Grid width={24} height={24} />
           ),
         }}
-        name="Posts"
-        component={PostScreen}
+        name="DefaultPostScreen"
+        component={DefaultScreen}
       />
       <MainTab.Screen
         options={{

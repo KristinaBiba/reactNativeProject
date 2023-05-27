@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
@@ -5,9 +6,18 @@ import { Background } from "../../components/Background";
 import { UserFoto } from "../../components/UserFoto";
 
 import LogOut from "../../assets/images/svg/log-out.svg";
+import { Post } from "../../components/Post";
 
-export const ProfileScreen = () => {
+export const ProfileScreen = ({route}) => {
   const navigation = useNavigation();
+
+  const [posts, setPosts] = useState([]);
+  
+  useEffect(() => {
+    if (route.params) {
+      setPosts((prevState) => [...prevState, route.params]);
+    }
+  }, [route.params]);
   return (
     <Background>
       <View style={styles.form}>
@@ -16,6 +26,9 @@ export const ProfileScreen = () => {
           <LogOut />
         </TouchableOpacity>
         <Text style={styles.title}>Natali Romanova</Text>
+
+        {posts.length > 0 && <Post data={posts}/>}
+
       </View>
     </Background>
   );

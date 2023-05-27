@@ -18,44 +18,37 @@ import * as Location from "expo-location";
 
 import ArrowLeft from "../../assets/images/svg/arrow-left.svg";
 import CameraBlack from "../../assets/images/svg/camera_alt-black.svg";
+import CameraWhite from "../../assets/images/svg/camera_alt-white.svg";
 import MapPin from "../../assets/images/svg/map-pin.svg";
 import Trash from "../../assets/images/svg/trash.svg";
 
 export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   const navigation = useNavigation();
 
-  const [isKeyboardShow, setIsKeyboardShow] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-
+  
   const [location, setLocation] = useState(null);
-
+  
   const [postFoto, setPostFoto] = useState("");
   const [postName, setPostName] = useState("");
   const [postLocation, setPostLocation] = useState("");
 
-  const keyboardHidden = () => {
-    setIsKeyboardShow(false);
-    Keyboard.dismiss();
-  };
-
-
-  const handlePublic = () => {
-    if (postFoto && postLocation && postName) {
-      keyboardHidden();
-      navigation.navigate("Posts", {screen: "DefaultPostScreen", params: { postFoto, postName, postLocation, location }} );
-    }
-    return;
-  };
-
-
+  const [isKeyboardShow, setIsKeyboardShow] = useState(false);
+  
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+      let { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
 
       setHasPermission(status === "granted");
+
+     let  statusLocation = await Location.requestForegroundPermissionsAsync();
+      if (statusLocation.status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+
     })();
   }, []);
 
@@ -65,7 +58,20 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-  
+
+  const keyboardHidden = () => {
+    setIsKeyboardShow(false);
+    Keyboard.dismiss();
+  };
+
+  const handlePublic = () => {
+    if (postFoto && postLocation && postName) {
+      keyboardHidden();
+      navigation.navigate("Home", {screen: "DefaultPostScreen", params: { postFoto, postName, postLocation, location }} );
+      handleDel();
+    }
+    return;
+  };
 
   const takeFoto = async () => {
       // if (postFoto) {
@@ -77,8 +83,6 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
         setPostFoto(uri);
         await MediaLibrary.createAssetAsync(uri);
         const locate = await Location.getCurrentPositionAsync();
-        console.log("latitude", location.coords.latitude);
-        console.log("longitude", location.coords.longitude);
         const coords = {
           latitude: locate.coords.latitude,
           longitude: locate.coords.longitude,
@@ -88,10 +92,9 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   }
 
   const handleDel = () => {
-    setPostFoto("");
+    setPostFoto(null);
     setPostName("");
     setPostLocation("");
-    console.log("cameraRef", cameraRef);
   };
 
 
@@ -122,10 +125,10 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
                   </View>
                 )}
                 <TouchableOpacity
-                  style={styles.cameraBtn}
+                  style={{...styles.cameraBtn, backgroundColor: postFoto ?  'rgba(255, 255, 255, 0.3)' : "#FFFFFF",}}
                   onPress={takeFoto}
                 >
-                  <CameraBlack />
+                  {postFoto ? <CameraWhite/> : <CameraBlack />}
                 </TouchableOpacity>
               </Camera>
 
@@ -295,7 +298,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 60,
     height: 60,
-    backgroundColor: "#FFFFFF",
+    // backgroundColor: "#FFFFFF",
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",

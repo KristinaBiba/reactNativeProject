@@ -32,7 +32,7 @@ export const LoginScreen = () => {
 
   const handleButtonClick = () => {
     console.log(`Email: ${email}, Password: ${password}`);
-    navigation.navigate("Home");
+    navigation.navigate("Posts");
   };
 
   const navigation = useNavigation();
@@ -84,9 +84,9 @@ export const LoginScreen = () => {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={0.8}
-            onPress={keyboardHidden}
+            onPress={handleButtonClick}
           >
-            <Text style={styles.buttonText} onPress={handleButtonClick}>
+            <Text style={styles.buttonText} >
               Увійти
             </Text>
           </TouchableOpacity>

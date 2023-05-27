@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { useState, useEffect } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 
 import MapView, { Marker } from "react-native-maps";
 
@@ -8,16 +8,17 @@ export const MapScreen = ({route}) => {
 
   const [location, setLocation] = useState(null);
 
-  console.log(route);
-  // const coordsLocation = {
-  //   latitude: route.params.location.latitude,
-  //   longitude: route.params.location.longitude,
-  // };
-  // setLocation(coordsLocation);
+  useEffect(() => {
+    const coordsLocation = {
+      latitude: route.params.location.latitude,
+      longitude: route.params.location.longitude,
+    };
+    setLocation(coordsLocation);
+  }, [route.params]);
 
   return (
     <View style={styles.form}>
-      {/* <MapView
+      <MapView
         style={styles.mapStyle}
         region={{
           ...location,
@@ -25,11 +26,11 @@ export const MapScreen = ({route}) => {
           longitudeDelta: 0.0421,
         }}
         showsUserLocation={true}
-      > */}
-        {/* {location && (
-          <Marker title="I was here" coordinate={location} description="Hello" />
-        )} */}
-      {/* </MapView> */}
+      >
+        {location && (
+          <Marker title={route.params.title} coordinate={location}/>
+        )}
+      </MapView>
     </View>
   );
 };
@@ -39,13 +40,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mapStyle: {
-    // fontFamily: "Roboto-Medium",
-    // color: "#212121",
-    // fontSize: 30,
-    // lineHeight: 35.16,
-    // textAlign: "center",
-    // marginBottom: 33,
-    // marginTop: 32,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });
 

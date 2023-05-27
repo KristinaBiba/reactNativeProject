@@ -22,11 +22,11 @@ export const Post = ({ data }) => {
             <Text style={styles.title}>{item.postName}</Text>
 
             <View style={styles.descriptionWrap}>
-              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("CommentsScreen")}> 
+              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("CommentsScreen", {src: item.postFoto})}> 
                 <Shape />
                 <Text style={styles.count}>0</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("MapScreen", {params: {location: item.location}})}>
+              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("MapScreen", {location: item.location, title: item.postName})}>
                 <MapPin />
                 <Text style={styles.location}>{item.postLocation}</Text>
               </TouchableOpacity>
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 32,
     marginBottom: 80,
+
   },
   imgWrap: {
     marginBottom: 34,
