@@ -12,10 +12,15 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+import { register } from "../../../redux/auth/authOperations";
+
 import { Background } from "../../components/Background";
 import { UserFoto } from "../../components/UserFoto";
 
 export const RegistrationScreen = () => {
+const dispatch = useDispatch();
+
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
   const keyboardHidden = () => {
@@ -34,16 +39,17 @@ export const RegistrationScreen = () => {
 
   const handleButtonClick = () => {
     console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
-    navigation.navigate("Posts");
+    dispatch(register({name, email, password}));
+    // navigation.navigate("Posts");
   }
   
   const navigation = useNavigation();
 
   return (
-    <TouchableWithoutFeedback onPress={keyboardHidden}>
+    <TouchableWithoutFeedback onPress={()=>{setIsKeyboardShow(false)}}>
       <Background>
         <View
-          style={{ ...styles.form, marginBottom: isKeyboardShow ? -207 : 0 }}
+          style={{ ...styles.form, marginBottom: isKeyboardShow ? -0 : 0 }}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
