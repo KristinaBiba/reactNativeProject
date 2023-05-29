@@ -4,10 +4,11 @@ import { Provider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 import { useRoute } from "./route";
 
-import {store} from "./redux/store";
-import {db} from "./config";
+import { store } from "./redux/store";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -20,11 +21,15 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
+  
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUser(user);
+    }
+  });
 
-
-  // db.auth().onAuthStateChanged((user) => setUser(user));
-
-  const routing = useRoute();
+  const routing = useRoute(user);
 
   return (
     <Provider store={store}>

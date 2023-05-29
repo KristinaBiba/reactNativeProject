@@ -1,39 +1,60 @@
-import { authReducer } from "./authSlice";
-import {db, auth} from "../../config";
+import { authSlice } from "./authSlice";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
-export const register = ({ email, password, name }) => async (
-  dispatch,
-  getState
-) => {
-  try {
+export const register =
+  ({ email, password, name }) =>
+  async (dispatch, getState) => {
+    try {
+      const auth = getAuth();
 
-    const { user } = await db
-      .auth()
-      .createUserWithEmailAndPassword(email, password);
-    dispatch(authReducer.actions.updateUserProfile({ userId: user.uid }));
-    console.log("user", user);
-  } catch (error) {
-    console.log("error", error);
+      await createUserWithEmailAndPassword(auth, email, password).then(
+        (userCredential) => {
+          const user = userCredential.user;
+        }
+      );
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+      });
 
-    console.log("error.message", error.message);
-  }
-};
+      const { uid, displayName } = await auth.currentUser;
 
-export const logIn = ({ email, password }) => async (
-  dispatch,
-  
-) => {
-  try {
-    const user = await db.auth().signInWithEmailAndPassword(email, password);
-    console.log("user", user);
-  } catch (error) {
-    console.log("error", error);
-    console.log("error.code", error.code);
-    console.log("error.message", error.message);
-  }
-};
+      dispatch(
+        authSlice.actions.updateUserProfile({ userId: uid, name: displayName })
+      );
+    } catch (error) {
+      console.log("error", error);
 
-export const logOut = () => async (dispatch, ) => {};
+      console.log("error.message", error.message);
+    }
+  };
 
+export const logIn =
+  ({ email, password }) =>
+  async (dispatch, getState) => {
+    try {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, email, password).then(
+        (userCredential) => {
+          const user = userCredential.user;
+          // await firebase.auth().onAuthStateChanged(function(user) {
+          // if (user) {
+          // const user = await db.auth().signInWithEmailAndPassword(email, password);
+          console.log("user", user);
+        }
+      );
+    } catch (error) {
+      console.log("error", error);
+      console.log("error.code", error.code);
+      console.log("error.message", error.message);
+    }
+  };
 
-export const updateUser = () => async (dispatch, ) => {};
+export const logOut = () => async (dispatch, getState) => {};
+
+export const updateUser = () => async (dispatch, getState) => {};
+// export const updateUser = () => async (dispatch, getState) => {};

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -19,7 +19,7 @@ import { Background } from "../../components/Background";
 import { UserFoto } from "../../components/UserFoto";
 
 export const RegistrationScreen = () => {
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
@@ -30,31 +30,32 @@ const dispatch = useDispatch();
 
   const [passwordInputSecure, setPasswordInputSecure] = useState(true);
   const togglePasswordSee = () => {
-      setPasswordInputSecure(!passwordInputSecure);
+    setPasswordInputSecure(!passwordInputSecure);
   };
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const navigation = useNavigation();
   const handleButtonClick = () => {
     console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
-    dispatch(register({name, email, password}));
+    dispatch(register({ name, email, password }));
     // navigation.navigate("Posts");
-  }
-  
-  const navigation = useNavigation();
+  };
 
   return (
-    <TouchableWithoutFeedback onPress={()=>{setIsKeyboardShow(false)}}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        setIsKeyboardShow(false);
+      }}
+    >
       <Background>
-        <View
-          style={{ ...styles.form, marginBottom: isKeyboardShow ? -0 : 0 }}
-        >
+        <View style={{ ...styles.form, marginBottom: isKeyboardShow ? -0 : 0 }}>
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <UserFoto/>
+            <UserFoto />
 
             <Text style={styles.title}>Реєстрація</Text>
 
@@ -90,13 +91,16 @@ const dispatch = useDispatch();
                 placeholder="Пароль"
                 secureTextEntry={passwordInputSecure}
                 style={styles.input}
-                value={password}  
+                value={password}
                 onFocus={() => {
                   setIsKeyboardShow(true);
                 }}
                 onChangeText={setPassword}
               ></TextInput>
-              <TouchableOpacity style={styles.passwordSee} onPress={togglePasswordSee}>
+              <TouchableOpacity
+                style={styles.passwordSee}
+                onPress={togglePasswordSee}
+              >
                 <Text>Показати</Text>
               </TouchableOpacity>
             </View>
@@ -107,10 +111,13 @@ const dispatch = useDispatch();
             activeOpacity={0.8}
             onPress={handleButtonClick}
           >
-            <Text style={styles.buttonText} >Зареєструватися</Text>
+            <Text style={styles.buttonText}>Зареєструватися</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Login")}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("Login")}
+          >
             <Text style={styles.logIn}>Вже є аккаунт? Увійти</Text>
           </TouchableOpacity>
         </View>

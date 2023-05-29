@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
@@ -12,12 +13,12 @@ import {
   Keyboard,
 } from "react-native";
 import { Background } from "../../components/Background";
+import { logIn } from "../../../redux/auth/authOperations";
 
 export const LoginScreen = () => {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
   const keyboardHidden = () => {
-    console.log("work");
     setIsKeyboardShow(false);
     Keyboard.dismiss();
   };
@@ -29,20 +30,21 @@ export const LoginScreen = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const handleButtonClick = () => {
     console.log(`Email: ${email}, Password: ${password}`);
-    navigation.navigate("Posts");
+    dispatch(logIn({email, password}));
+    // navigation.navigate("Posts");
   };
 
-  const navigation = useNavigation();
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
        
       <Background>
         <View
-          style={{ ...styles.form, marginBottom: isKeyboardShow ? -179 : 0 }}
+          style={{ ...styles.form, marginBottom: isKeyboardShow ? -0 : 0 }}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
