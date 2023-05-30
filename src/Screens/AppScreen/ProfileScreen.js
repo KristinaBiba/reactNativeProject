@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from '@react-navigation/native';
 
 import { Background } from "../../components/Background";
@@ -7,11 +8,18 @@ import { UserFoto } from "../../components/UserFoto";
 
 import LogOut from "../../assets/images/svg/log-out.svg";
 import { Post } from "../../components/Post";
+import { logOut } from "../../../redux/auth/authOperations";
 
 export const ProfileScreen = ({route}) => {
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const {name} = useSelector((state)=> state)
 
   const [posts, setPosts] = useState([]);
+
+  const singOut = () => {
+    dispatch(logOut());
+  }
   
   useEffect(() => {
     if (route.params) {
@@ -22,10 +30,10 @@ export const ProfileScreen = ({route}) => {
     <Background>
       <View style={styles.form}>
         <UserFoto />
-        <TouchableOpacity style={styles.logOutBtn} onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity style={styles.logOutBtn} onPress={singOut}>
           <LogOut />
         </TouchableOpacity>
-        <Text style={styles.title}>Natali Romanova</Text>
+        <Text style={styles.title}>{name}</Text>
 
         {posts.length > 0 && <Post data={posts}/>}
 

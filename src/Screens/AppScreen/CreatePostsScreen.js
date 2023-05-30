@@ -15,6 +15,9 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import {db, storage} from '../../../config';
 
 import ArrowLeft from "../../assets/images/svg/arrow-left.svg";
 import CameraBlack from "../../assets/images/svg/camera_alt-black.svg";
@@ -28,15 +31,15 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  
+
   const [location, setLocation] = useState(null);
-  
+
   const [postFoto, setPostFoto] = useState("");
   const [postName, setPostName] = useState("");
   const [postLocation, setPostLocation] = useState("");
 
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
-  
+
   useEffect(() => {
     (async () => {
       let { status } = await Camera.requestCameraPermissionsAsync();
@@ -44,11 +47,10 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
 
       setHasPermission(status === "granted");
 
-     let  statusLocation = await Location.requestForegroundPermissionsAsync();
+      let statusLocation = await Location.requestForegroundPermissionsAsync();
       if (statusLocation.status !== "granted") {
         console.log("Permission to access location was denied");
       }
-
     })();
   }, []);
 
@@ -64,40 +66,58 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
     Keyboard.dismiss();
   };
 
+  const sendPostToDB = async () => {
+      try {
+        const docRef = await addDoc(collection(db, 'posts'), {
+          postName,
+          postLocation,
+          postFoto,
+        });
+        console.log('Document written with ID: ', docRef.id);
+      } catch (e) {
+        console.error('Error adding document: ', e);
+          throw e;
+      }
+};
+
+  
+
   const handlePublic = () => {
     if (postFoto && postLocation && postName) {
       keyboardHidden();
-      navigation.navigate("Home", {screen: "DefaultPostScreen", params: { postFoto, postName, postLocation, location }} );
+      sendPostToDB();
+      navigation.navigate("Home", {
+        screen: "DefaultPostScreen",
+        params: { postFoto, postName, postLocation, location },
+      });
       handleDel();
     }
     return;
   };
 
   const takeFoto = async () => {
-      // if (postFoto) {
-      //   setPostFoto("");
-      //   return;
-      // }
-      if (cameraRef) {
-        const { uri } = await cameraRef.takePictureAsync();
-        setPostFoto(uri);
-        await MediaLibrary.createAssetAsync(uri);
-        const locate = await Location.getCurrentPositionAsync();
-        const coords = {
-          latitude: locate.coords.latitude,
-          longitude: locate.coords.longitude,
-        };
-        setLocation(coords);
+    // if (postFoto) {
+    //   setPostFoto("");
+    //   return;
+    // }
+    if (cameraRef) {
+      const { uri } = await cameraRef.takePictureAsync();
+      setPostFoto(uri);
+      await MediaLibrary.createAssetAsync(uri);
+      const locate = await Location.getCurrentPositionAsync();
+      const coords = {
+        latitude: locate.coords.latitude,
+        longitude: locate.coords.longitude,
+      };
+      setLocation(coords);
     }
-  }
+  };
 
   const handleDel = () => {
     setPostFoto(null);
     setPostName("");
     setPostLocation("");
   };
-
-
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
@@ -125,10 +145,15 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
                   </View>
                 )}
                 <TouchableOpacity
-                  style={{...styles.cameraBtn, backgroundColor: postFoto ?  'rgba(255, 255, 255, 0.3)' : "#FFFFFF",}}
+                  style={{
+                    ...styles.cameraBtn,
+                    backgroundColor: postFoto
+                      ? "rgba(255, 255, 255, 0.3)"
+                      : "#FFFFFF",
+                  }}
                   onPress={takeFoto}
                 >
-                  {postFoto ? <CameraWhite/> : <CameraBlack />}
+                  {postFoto ? <CameraWhite /> : <CameraBlack />}
                 </TouchableOpacity>
               </Camera>
 

@@ -1,17 +1,19 @@
-import { authSlice } from "./authSlice";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
+import { authSlice } from "./authSlice";
+
+const auth = getAuth();
 
 export const register =
   ({ email, password, name }) =>
   async (dispatch, getState) => {
     try {
-      const auth = getAuth();
-
       await createUserWithEmailAndPassword(auth, email, password).then(
         (userCredential) => {
           const user = userCredential.user;
@@ -37,16 +39,8 @@ export const logIn =
   ({ email, password }) =>
   async (dispatch, getState) => {
     try {
-      const auth = getAuth();
       signInWithEmailAndPassword(auth, email, password).then(
-        (userCredential) => {
-          const user = userCredential.user;
-          // await firebase.auth().onAuthStateChanged(function(user) {
-          // if (user) {
-          // const user = await db.auth().signInWithEmailAndPassword(email, password);
-          console.log("user", user);
-        }
-      );
+        (userCredential) => {});
     } catch (error) {
       console.log("error", error);
       console.log("error.code", error.code);
@@ -54,7 +48,37 @@ export const logIn =
     }
   };
 
-export const logOut = () => async (dispatch, getState) => {};
+export const logOut = () => async (dispatch, getState) => {
+  try {
+    await auth.signOut();
+  } catch (error) {
+    console.log("error.message", error.message);
+  }
+
+  dispatch(authSlice.actions.userLogOut());
+};
 
 export const updateUser = () => async (dispatch, getState) => {};
-// export const updateUser = () => async (dispatch, getState) => {};
+
+export const userStateChanged = () => async (dispatch, getState) => {
+  try {
+    await onAuthStateChanged(auth, (user) => {
+      console.log("user", user);
+      if (user) {
+        dispatch(
+          authSlice.actions.updateUserProfile({
+            userId: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+          })
+        );
+        dispatch(authSlice.actions.isLoggedIn(true));
+      } else {
+        dispatch(authSlice.actions.isLoggedIn(false));
+      }
+    });
+  } catch (error) {
+    console.log("error.message", error.message);
+  }
+};

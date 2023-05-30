@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React from "react";
 import { Provider } from "react-redux";
-import { NavigationContainer } from "@react-navigation/native";
+import { PersistGate } from "redux-persist/integration/react";
+
 import { useFonts } from "expo-font";
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { store, persistor } from "./redux/store";
 
-import { useRoute } from "./route";
-
-import { store } from "./redux/store";
+import { Main } from "./src/components/Main";
+import { Text } from "react-native";
 
 export default function App() {
-  const [user, setUser] = useState(null);
   const [fontsLoaded] = useFonts({
     "Roboto-Bold": require("./src/assets/fonts/Roboto-Bold.ttf"),
     "Roboto-Medium": require("./src/assets/fonts/Roboto-Medium.ttf"),
@@ -21,28 +19,12 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-  
-  const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setUser(user);
-    }
-  });
-
-  const routing = useRoute(user);
 
   return (
     <Provider store={store}>
-      <View style={styles.container}>
-        <NavigationContainer>{routing}</NavigationContainer>
-      </View>
+      <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+        <Main />
+      </PersistGate>
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-  },
-});

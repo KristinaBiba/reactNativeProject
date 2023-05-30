@@ -1,14 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import { register, logIn, logOut, updateUser} from "./authOperations";
 
 const initialState = {
   name: null, 
   email: null, 
   userId: null,
-  
-  // token: null,
+  photoURL: null,
   isLoggedIn: false,
-  // isRefreshing: false,
 };
 
 export const authSlice = createSlice({
@@ -19,41 +16,16 @@ export const authSlice = createSlice({
       ...state,
       userId: payload.userId,
       name: payload.name,
+      email: payload.email,
+      photoURL: payload.photoURL,
     }),
     isLoggedIn: (state, {payload}) => ({
       ...state,
       isLoggedIn: payload,
-    })
-  },
-  //   extraReducers: {
-  //     [register.fulfilled](state, action) {
-  //       state.user = action.payload;
-  //     //   state.token = action.payload.token;
-  //     //   state.isLoggedIn = true;
-  //     },
-  //     [logIn.fulfilled](state, action) {
-  //       state.user = action.payload.user;
-  //     //   state.token = action.payload.token;
-  //     //   state.isLoggedIn = true;
-  //     },
-  //     [logOut.fulfilled](state) {
-  //       state.user = { name: null, email: null };
-  //     //   state.token = null;
-  //     //   state.isLoggedIn = false;
-  //     },
-  //     [updateUser.pending](state) {
-  //     //   state.isRefreshing = true;
-  //     },
-  //     [updateUser.fulfilled](state, action) {
-  //       state.user = action.payload.user;
-  //     //   state.isLoggedIn = true;
-  //     //   state.isRefreshing = false;
-  //     },
-  //     [updateUser.rejected](state) {
-  //     //   state.isRefreshing = false;
-  //     //   state.token = null;
-  //     },
-  //   },
+    }),
+    userLogOut: (state) => {
+      initialState
+    }
+  },  
 });
 
-// export const authReducer = authSlice.reducer;

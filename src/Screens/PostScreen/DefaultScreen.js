@@ -1,16 +1,23 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
-import { useNavigation } from '@react-navigation/native';
 
 import LogOut from "../../assets/images/svg/log-out.svg";
 import UserFoto from "../../assets/images/user-foto/Rectangle22.jpg";
 import { Post } from "../../components/Post";
+import { useDispatch, useSelector } from "react-redux";
+import { logOut } from "../../../redux/auth/authOperations";
 
 export const DefaultScreen = ({route}) => {
 
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const {name, email} = useSelector((state)=> state)
 
   const [posts, setPosts] = useState([]);
+
+  const singOut = () => {
+    dispatch(logOut());
+  }
   
   useEffect(() => {
     if (route.params) {
@@ -23,7 +30,7 @@ export const DefaultScreen = ({route}) => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Публікації</Text>
 
-        <TouchableOpacity style={styles.logOutBtn} onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity style={styles.logOutBtn} onPress={singOut}>
           <LogOut />
         </TouchableOpacity>
       </View>
@@ -32,8 +39,8 @@ export const DefaultScreen = ({route}) => {
         <View style={styles.userWrap}>
           <Image style={styles.userFoto} source={UserFoto}></Image>
           <View>
-            <Text style={styles.userName}>Natali Romanova</Text>
-            <Text style={styles.userEmail}>email@example.com</Text>
+            <Text style={styles.userName}>{name}</Text>
+            <Text style={styles.userEmail}>{email}</Text>
           </View>
         </View>
 

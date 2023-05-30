@@ -87,7 +87,7 @@ export const useRoute = (isAuth) => {
               style={{
                 marginLeft: 20,
               }}
-              // onPress={() => navigation.navigate("DefaultPostScreen")}
+              // onPress={() => navigation.navigate("CommentsScreen")}
             >
               <Arrow />
             </TouchableOpacity>
