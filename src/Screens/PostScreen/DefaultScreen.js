@@ -6,24 +6,41 @@ import UserFoto from "../../assets/images/user-foto/Rectangle22.jpg";
 import { Post } from "../../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../../redux/auth/authOperations";
+import { collection, getDocs } from 'firebase/firestore'; 
+import { db } from '../../../config';
 
 export const DefaultScreen = ({route}) => {
 
   const dispatch = useDispatch();
 
-  const {name, email} = useSelector((state)=> state)
+  const {name, email} = useSelector((state)=> state);
 
   const [posts, setPosts] = useState([]);
+
+  const getDataFromFirestore = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, 'posts'));
+            const array = [];
+            snapshot.forEach((doc) => (array.push({ ...doc.data(), id: doc.id})))
+            return array;
+    } catch (error) {
+      console.log('error in getDataFromFirestore', error);
+            throw error;
+    }
+  };
+
 
   const singOut = () => {
     dispatch(logOut());
   }
   
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
+    async function fetchData() {
+      const currentPosts = await getDataFromFirestore();
+      setPosts(currentPosts);
     }
-  }, [route.params]);
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.body}>

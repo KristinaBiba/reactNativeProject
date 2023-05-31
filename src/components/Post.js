@@ -13,8 +13,14 @@ export const Post = ({ data }) => {
       <FlatList
         data={data}
         keyExtractor={(item, indx) => indx.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.imgWrap}>
+        renderItem={({ item }) => {
+          let counter = 0;
+          if (item.comments){
+            counter = item.comments.length;
+          }
+          
+
+         return ( <View style={styles.imgWrap}>
             <Image
               source={{ uri: item.postFoto }}
               style={styles.image}
@@ -22,17 +28,17 @@ export const Post = ({ data }) => {
             <Text style={styles.title}>{item.postName}</Text>
 
             <View style={styles.descriptionWrap}>
-              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("CommentsScreen", {src: item.postFoto})}> 
+              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("CommentsScreen", {src: item.postFoto, id: item.id})}> 
                 <Shape />
-                <Text style={styles.count}>0</Text>
+                <Text style={styles.count}>{counter}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("MapScreen", {location: item.location, title: item.postName})}>
                 <MapPin />
                 <Text style={styles.location}>{item.postLocation}</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        )}
+          </View>)
+  }}
       />
     </View>
   );

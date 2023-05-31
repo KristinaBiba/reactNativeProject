@@ -17,15 +17,19 @@ import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
-import {db, storage} from '../../../config';
+import {db, storage, app} from '../../../config';
 
 import ArrowLeft from "../../assets/images/svg/arrow-left.svg";
 import CameraBlack from "../../assets/images/svg/camera_alt-black.svg";
 import CameraWhite from "../../assets/images/svg/camera_alt-white.svg";
 import MapPin from "../../assets/images/svg/map-pin.svg";
 import Trash from "../../assets/images/svg/trash.svg";
+import { useSelector } from "react-redux";
 
 export const CreatePostsScreen = ({ navigation: { goBack } }) => {
+
+  const user = useSelector((state)=> state);
+
   const navigation = useNavigation();
 
   const [hasPermission, setHasPermission] = useState(null);
@@ -39,6 +43,7 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   const [postLocation, setPostLocation] = useState("");
 
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
+
 
   useEffect(() => {
     (async () => {
@@ -72,6 +77,8 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
           postName,
           postLocation,
           postFoto,
+          location,
+          owner: user.userId,
         });
         console.log('Document written with ID: ', docRef.id);
       } catch (e) {
@@ -80,17 +87,38 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
       }
 };
 
+const uploadPhotoToServer = async () => {
+  
+  const storage = getStorage();
+  
+  
+  // const response = await fetch(postFoto);
+  const file =  postFoto.blob();
+  const starsRef = ref(storage, file);
+
+  // const uniquePostId = Date.now().toString();
+  getDownloadURL(starsRef)
+  .then((url) => {
+    const data = url;
+    console.log("url", url);
+    // Insert url into an <img> tag to "download"
+  })
+  .catch((error) => {})
+  // console.log('app', app.storage());
+  // const data = await app.storage().ref(`postImage/${uniquePostId}`).put(file);
+  // console.log("data", data);
+};
+
   
 
   const handlePublic = () => {
     if (postFoto && postLocation && postName) {
       keyboardHidden();
+      // uploadPhotoToServer();
       sendPostToDB();
       navigation.navigate("Home", {
-        screen: "DefaultPostScreen",
-        params: { postFoto, postName, postLocation, location },
-      });
-      handleDel();
+        screen: "DefaultPostScreen"});
+      // handleDel();
     }
     return;
   };

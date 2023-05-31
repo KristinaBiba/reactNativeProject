@@ -63,7 +63,6 @@ export const updateUser = () => async (dispatch, getState) => {};
 export const userStateChanged = () => async (dispatch, getState) => {
   try {
     await onAuthStateChanged(auth, (user) => {
-      console.log("user", user);
       if (user) {
         dispatch(
           authSlice.actions.updateUserProfile({

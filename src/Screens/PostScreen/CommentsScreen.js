@@ -9,69 +9,107 @@ import {
   FlatList,
   Keyboard,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 
 import Send from "../../assets/images/svg/send.svg";
 import UserFoto from "../../assets/images/user-foto/Rectangle22.jpg";
+import { useSelector } from "react-redux";
+import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import { db } from "../../../config";
 
 export const CommentsScreen = ({ route }) => {
-  // console.log("route.params.src", route.params.src);
+  const user = useSelector((state) => state);
+  const { src, id } = route.params;
 
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
   const [postFoto, setPostFoto] = useState(null);
   const [newComments, setNewComments] = useState("");
-  const [comments, setCommentss] = useState([]);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     if (route.params) {
-      setPostFoto(route.params.src);
-      // console.log("postFoto", postFoto);
+      setPostFoto(src);
     }
+
+    async function fetchData() {
+      const currentPosts = await getDataFromFirestore();
+      setComments(currentPosts.comments);
+    }
+    fetchData();
   }, [route.params]);
+
+  const getDataFromFirestore = async () => {
+    try {
+      const docRef = doc(db, "posts", id);
+      const snapshot = await getDoc(docRef);
+      const array = snapshot.data();
+      return array;
+    } catch (error) {
+      console.log("error in getDataFromFirestore", error);
+      throw error;
+    }
+  };
 
   const keyboardHidden = () => {
     setIsKeyboardShow(false);
     Keyboard.dismiss();
   };
 
-  const handlePublicComment = () => {
+  const addComment = async () => {
+    try {
+      const ref = doc(db, "posts", id);
+
+    
+      const postTime = new Date(Date.now());
+
+     const day = [
+                postTime.getDate(),
+                [
+                  "січня",
+                  "лютого",
+                  "березня",
+                  "квітня",
+                  "травня",
+                  "червня",
+                  "липня",
+                  "серпня",
+                  "вересня",
+                  "жовтня",
+                  "листопада",
+                  "грудня",
+                ][postTime.getMonth()],
+                postTime.getFullYear(),
+              ].join(" ");
+
+              const time = [
+                postTime.getHours(),
+                
+                postTime.getMinutes(),
+              ].join(":");
+
+    await updateDoc(ref, {
+      comments: arrayUnion({
+        commentOwner: user.userId,
+        commentText: newComments,
+        day,
+        time,
+        }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePublicComment = async () => {
     if (newComments) {
       keyboardHidden();
-      console.log(`Comment: ${newComments}`);
+      addComment();
       setNewComments("");
     }
     return;
   };
-  // const time = new Date();
-
-  const data = [
-    {
-      comentText: "Lorem* fndlkjvng fgdfgdg drgdrgdrg drhdrhdrh drgdrgrd drgdg",
-      comentDay: "02 липня 2021",
-      comentTime: "12:44",
-      userName: 'Vova',
-    },
-    {
-      comentText: "Lorem* fndlkjvng fgdfgdg drgdrgdrg drhdrhdrh drgdrgrd drgdg",
-      comentDay: "02 липня 2021",
-      comentTime: "13:44",
-      userName: 'Vova',
-    },
-    {
-      comentText: "Lorem* fndlkjvng fgdfgdg drgdrgdrg drhdrhdrh drgdrgrd drgdg",
-      comentDay: "02 липня 2021",
-      comentTime: "14:44",
-      userName: 'Natali Romanova',
-    },
-    {
-      comentText: "Lorem* fndlkjvng fgdfgdg drgdrgdrg drhdrhdrh drgdrgrd drgdg",
-      comentDay: "02 липня 2021",
-      comentTime: "15:44",
-      userName: 'Vova',
-    },
-  ];
 
   return (
     <View style={styles.body}>
@@ -79,25 +117,41 @@ export const CommentsScreen = ({ route }) => {
       <Image source={{ uri: postFoto }} style={styles.image} />
 
       <View style={styles.wrap}>
-        {/* {comments.length > 0 && <FlatList data={comments}/>} */}
-        <FlatList
-          data={data}
-          keyExtractor={(item, indx) => indx.toString()}
-          renderItem={({ item }) => {
-            let owner = false;
-            if (item.userName === 'Natali Romanova') {
-              owner = true;
-            }
-            return (<View style={{...styles.comentWrap, flexDirection: owner ? "row-reverse" : 'row'}}>
-              <Image style={styles.userFoto} source={UserFoto}></Image>
+        {comments.length > 0 && (
+          <FlatList
+            data={comments}
+            keyExtractor={(item, indx) => indx.toString()}
+            renderItem={({ item }) => {
+              let owner = false;
+              if (item.commentOwner === user.userId) {
+                owner = true;
+              }
+              return (
+                <View
+                  style={{
+                    ...styles.comentWrap,
+                    flexDirection: owner ? "row-reverse" : "row",
+                  }}
+                >
+                  <Image style={styles.userFoto} source={UserFoto}></Image>
 
-              <View style={{...styles.textWrap, borderTopRightRadius: owner ? 0 : 6, borderTopLeftRadius: owner ? 6 : 0,}}>
-                <Text style={styles.text}>{item.comentText}</Text>
-                <Text style={styles.time}>{item.comentDay} | {item.comentTime}</Text>
-              </View>
-            </View>)
-          }}
-        />
+                  <View
+                    style={{
+                      ...styles.textWrap,
+                      borderTopRightRadius: owner ? 0 : 6,
+                      borderTopLeftRadius: owner ? 6 : 0,
+                    }}
+                  >
+                    <Text style={styles.text}>{item.commentText}</Text>
+                    <Text style={styles.time}>
+                      {item.day} | {item.time}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }}
+          />
+        )}
 
         <View style={styles.inputWrap}>
           <TextInput
@@ -148,7 +202,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     alignItems: "flex-start",
     justifyContent: "space-between",
-    // flexDirection: 'row',    
+    // flexDirection: 'row',
   },
   userFoto: {
     width: 28,
