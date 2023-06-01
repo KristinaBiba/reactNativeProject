@@ -1,9 +1,6 @@
 import { TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { useNavigation } from "@react-navigation/native";
-
-const PostStack = createStackNavigator();
-const AuthStack = createStackNavigator();
+import { useNavigation } from "@react-navigation/native";
 
 import { RegistrationScreen } from "./src/Screens/AuthScreen/RegistrationScreen";
 import { LoginScreen } from "./src/Screens/AuthScreen/LoginScreen";
@@ -12,11 +9,14 @@ import { CommentsScreen } from "./src/Screens/PostScreen/CommentsScreen";
 import { MapScreen } from "./src/Screens/PostScreen/MapScreen";
 import { Home } from "./src/Screens/AppScreen/Home";
 
+const PostStack = createStackNavigator();
+const AuthStack = createStackNavigator();
+import * as RootNavigation from './utils/RootNavigation';
+
 import Arrow from "./src/assets/images/svg/arrow-left.svg";
 
 
 export const useRoute = (isAuth) => {
-  // const navigation = useNavigation();
 
   if (!isAuth) {
     return (
@@ -36,10 +36,12 @@ export const useRoute = (isAuth) => {
           component={RegistrationScreen}
         />
       </AuthStack.Navigator>
+   
     );
   }
 
   return (
+
     <PostStack.Navigator initialRouteName="Home">
       <PostStack.Screen
         options={{
@@ -59,7 +61,7 @@ export const useRoute = (isAuth) => {
               style={{
                 marginLeft: 20,
               }}
-              // onPress={() => navigation.navigate("DefaultPostScreen")}
+              onPress={() => RootNavigation.navigate('DefaultPostScreen')}
             >
               <Arrow />
             </TouchableOpacity>
@@ -87,7 +89,7 @@ export const useRoute = (isAuth) => {
               style={{
                 marginLeft: 20,
               }}
-              // onPress={() => navigation.navigate("CommentsScreen")}
+              onPress={() => RootNavigation.navigate('DefaultPostScreen')}
             >
               <Arrow />
             </TouchableOpacity>
@@ -106,5 +108,6 @@ export const useRoute = (isAuth) => {
         component={MapScreen}
       />
     </PostStack.Navigator>
+    
   );
 };

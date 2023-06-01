@@ -6,38 +6,31 @@ import UserFoto from "../../assets/images/user-foto/Rectangle22.jpg";
 import { Post } from "../../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../../redux/auth/authOperations";
-import { collection, getDocs } from 'firebase/firestore'; 
-import { db } from '../../../config';
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../../config";
 
-export const DefaultScreen = ({route}) => {
+export const DefaultScreen = ({ route }) => {
 
   const dispatch = useDispatch();
 
-  const {name, email} = useSelector((state)=> state);
+  const { name, email} = useSelector((state) => state);
+
 
   const [posts, setPosts] = useState([]);
 
-  const getDataFromFirestore = async () => {
-    try {
-      const snapshot = await getDocs(collection(db, 'posts'));
-            const array = [];
-            snapshot.forEach((doc) => (array.push({ ...doc.data(), id: doc.id})))
-            return array;
-    } catch (error) {
-      console.log('error in getDataFromFirestore', error);
-            throw error;
-    }
-  };
-
-
   const singOut = () => {
     dispatch(logOut());
-  }
-  
+  };
+
   useEffect(() => {
     async function fetchData() {
-      const currentPosts = await getDataFromFirestore();
-      setPosts(currentPosts);
+      const array = [];
+      await onSnapshot(collection(db, "posts"), (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          array.push({ ...doc.data(), id: doc.id });
+        });
+        setPosts(array);
+      });
     }
     fetchData();
   }, []);
@@ -61,18 +54,16 @@ export const DefaultScreen = ({route}) => {
           </View>
         </View>
 
-        {posts.length > 0 && <Post data={posts}/>}
-
+        {posts.length > 0 && <Post data={posts} />}
       </View>
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   body: {
-    height: '100%',
-    backgroundColor: '#FFFFFF',
+    height: "100%",
+    backgroundColor: "#FFFFFF",
   },
   header: {
     position: "relative",

@@ -1,10 +1,10 @@
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
-  signOut,
+  getAuth, 
+  signOut, 
 } from "firebase/auth";
 import { authSlice } from "./authSlice";
 
@@ -40,7 +40,9 @@ export const logIn =
   async (dispatch, getState) => {
     try {
       signInWithEmailAndPassword(auth, email, password).then(
-        (userCredential) => {});
+        (userCredential) => {
+          dispatch(authSlice.actions.logInUser(userCredential._tokenResponse));
+        });
     } catch (error) {
       console.log("error", error);
       console.log("error.code", error.code);
@@ -50,12 +52,12 @@ export const logIn =
 
 export const logOut = () => async (dispatch, getState) => {
   try {
-    await auth.signOut();
+    await signOut(auth);
+    dispatch(authSlice.actions.userLogOut());
   } catch (error) {
     console.log("error.message", error.message);
   }
 
-  dispatch(authSlice.actions.userLogOut());
 };
 
 export const updateUser = () => async (dispatch, getState) => {};
@@ -68,14 +70,11 @@ export const userStateChanged = () => async (dispatch, getState) => {
           authSlice.actions.updateUserProfile({
             userId: user.uid,
             name: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
           })
         );
         dispatch(authSlice.actions.isLoggedIn(true));
-      } else {
-        dispatch(authSlice.actions.isLoggedIn(false));
-      }
+      } 
+        
     });
   } catch (error) {
     console.log("error.message", error.message);

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation } from '@react-navigation/native';
 
 import { Background } from "../../components/Background";
 import { UserFoto } from "../../components/UserFoto";
@@ -10,22 +9,33 @@ import LogOut from "../../assets/images/svg/log-out.svg";
 import { Post } from "../../components/Post";
 import { logOut } from "../../../redux/auth/authOperations";
 
-export const ProfileScreen = ({route}) => {
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../../config";
+
+export const ProfileScreen = ({ route }) => {
   const dispatch = useDispatch();
 
-  const {name} = useSelector((state)=> state)
+  const { name } = useSelector((state) => state);
 
   const [posts, setPosts] = useState([]);
 
   const singOut = () => {
     dispatch(logOut());
-  }
-  
+  };
+
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
+    async function fetchData() {
+      const array = [];
+      await onSnapshot(collection(db, "posts"), (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          array.push({ ...doc.data(), id: doc.id });
+        });
+        setPosts(array);
+      });
     }
-  }, [route.params]);
+    fetchData();
+  }, []);
+
   return (
     <Background>
       <View style={styles.form}>
@@ -35,8 +45,7 @@ export const ProfileScreen = ({route}) => {
         </TouchableOpacity>
         <Text style={styles.title}>{name}</Text>
 
-        {posts.length > 0 && <Post data={posts}/>}
-
+        {posts.length > 0 && <Post data={posts} />}
       </View>
     </Background>
   );
@@ -44,7 +53,7 @@ export const ProfileScreen = ({route}) => {
 
 const styles = StyleSheet.create({
   form: {
-    position: 'relative',
+    position: "relative",
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -53,7 +62,7 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
     marginTop: 60,
-    flex:0.9,
+    flex: 0.9,
   },
   title: {
     fontFamily: "Roboto-Medium",
@@ -61,14 +70,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 35.16,
     textAlign: "center",
-    marginBottom: 33,
-    // marginTop: 32,
   },
   logOutBtn: {
     position: "absolute",
     right: 19,
     top: 21,
     width: 24,
-    // zIndex: 1000,
   },
 });

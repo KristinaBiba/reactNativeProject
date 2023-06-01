@@ -15,9 +15,9 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
-import {db, storage, app} from '../../../config';
+import {db, storage} from '../../../config';
 
 import ArrowLeft from "../../assets/images/svg/arrow-left.svg";
 import CameraBlack from "../../assets/images/svg/camera_alt-black.svg";
@@ -38,7 +38,7 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
 
   const [location, setLocation] = useState(null);
 
-  const [postFoto, setPostFoto] = useState("");
+  const [postFoto, setPostFoto] = useState(null);
   const [postName, setPostName] = useState("");
   const [postLocation, setPostLocation] = useState("");
 
@@ -72,11 +72,12 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
   };
 
   const sendPostToDB = async () => {
+    const photo = await uploadPhotoToServer();
       try {
         const docRef = await addDoc(collection(db, 'posts'), {
           postName,
           postLocation,
-          postFoto,
+          photo,
           location,
           owner: user.userId,
         });
@@ -88,25 +89,18 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
 };
 
 const uploadPhotoToServer = async () => {
-  
-  const storage = getStorage();
-  
-  
-  // const response = await fetch(postFoto);
-  const file =  postFoto.blob();
-  const starsRef = ref(storage, file);
 
-  // const uniquePostId = Date.now().toString();
-  getDownloadURL(starsRef)
-  .then((url) => {
-    const data = url;
-    console.log("url", url);
-    // Insert url into an <img> tag to "download"
-  })
-  .catch((error) => {})
-  // console.log('app', app.storage());
-  // const data = await app.storage().ref(`postImage/${uniquePostId}`).put(file);
-  // console.log("data", data);
+  const response = await fetch(postFoto);
+
+    const file = await response.blob();
+
+    const photoId = Date.now().toString();
+    const storageRef = ref(storage, `postImage/${photoId}`);
+    await uploadBytes(storageRef, file);
+
+    const photoUrl = await getDownloadURL(ref(storage, `postImage/${photoId}`));
+    return photoUrl;
+
 };
 
   
@@ -114,11 +108,10 @@ const uploadPhotoToServer = async () => {
   const handlePublic = () => {
     if (postFoto && postLocation && postName) {
       keyboardHidden();
-      // uploadPhotoToServer();
       sendPostToDB();
       navigation.navigate("Home", {
         screen: "DefaultPostScreen"});
-      // handleDel();
+      handleDel();
     }
     return;
   };

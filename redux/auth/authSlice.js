@@ -16,6 +16,13 @@ export const authSlice = createSlice({
       ...state,
       userId: payload.userId,
       name: payload.name,
+      // email: payload.email,
+      // photoURL: payload.photoURL,
+    }),
+    logInUser: (state, { payload }) => ({
+      ...state,
+      userId: payload.localId,
+      name: payload.displayName,
       email: payload.email,
       photoURL: payload.photoURL,
     }),
@@ -23,9 +30,8 @@ export const authSlice = createSlice({
       ...state,
       isLoggedIn: payload,
     }),
-    userLogOut: (state) => {
-      initialState
-    }
+    userLogOut: () => 
+      initialState   
   },  
 });
 

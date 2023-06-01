@@ -1,8 +1,16 @@
+import { useNavigation } from "@react-navigation/native";
 
-import { useNavigation } from '@react-navigation/native';
+import {
+  FlatList,
+  StyleSheet,
+  Image,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
-import { FlatList, StyleSheet, Image, View, Text, TouchableOpacity } from "react-native";
 import Shape from "../assets/images/svg/shape.svg";
+import ShapeFull from "../assets/images/svg/shape-full.svg";
 import MapPin from "../assets/images/svg/map-pin.svg";
 
 export const Post = ({ data }) => {
@@ -15,30 +23,44 @@ export const Post = ({ data }) => {
         keyExtractor={(item, indx) => indx.toString()}
         renderItem={({ item }) => {
           let counter = 0;
-          if (item.comments){
+          if (item.comments) {
             counter = item.comments.length;
           }
-          
 
-         return ( <View style={styles.imgWrap}>
-            <Image
-              source={{ uri: item.postFoto }}
-              style={styles.image}
-            />
-            <Text style={styles.title}>{item.postName}</Text>
+          return (
+            <View style={styles.imgWrap}>
+              <Image source={{ uri: item.photo }} style={styles.image} />
+              <Text style={styles.title}>{item.postName}</Text>
 
-            <View style={styles.descriptionWrap}>
-              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("CommentsScreen", {src: item.postFoto, id: item.id})}> 
-                <Shape />
-                <Text style={styles.count}>{counter}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.wrap} onPress={() => navigation.navigate("MapScreen", {location: item.location, title: item.postName})}>
-                <MapPin />
-                <Text style={styles.location}>{item.postLocation}</Text>
-              </TouchableOpacity>
+              <View style={styles.descriptionWrap}>
+                <TouchableOpacity
+                  style={styles.wrap}
+                  onPress={() =>
+                    navigation.navigate("CommentsScreen", {
+                      src: item.photo,
+                      id: item.id,
+                    })
+                  }
+                >
+                  {counter ? <ShapeFull /> : <Shape />}
+                  <Text style={styles.count}>{counter}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.wrap}
+                  onPress={() =>
+                    navigation.navigate("MapScreen", {
+                      location: item.location,
+                      title: item.postName,
+                    })
+                  }
+                >
+                  <MapPin />
+                  <Text style={styles.location}>{item.postLocation}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>)
-  }}
+          );
+        }}
       />
     </View>
   );
@@ -48,7 +70,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 32,
     marginBottom: 80,
-
   },
   imgWrap: {
     marginBottom: 34,
@@ -67,14 +88,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   descriptionWrap: {
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
   },
   wrap: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
   count: {
     marginLeft: 8,

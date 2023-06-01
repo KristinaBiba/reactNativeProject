@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -11,11 +12,14 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  onSnapshot,
+} from "firebase/firestore";
 import Send from "../../assets/images/svg/send.svg";
 import UserFoto from "../../assets/images/user-foto/Rectangle22.jpg";
-import { useSelector } from "react-redux";
-import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { db } from "../../../config";
 
 export const CommentsScreen = ({ route }) => {
@@ -29,28 +33,25 @@ export const CommentsScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        let currentPost = {};
+        await onSnapshot(doc(db, "posts", id), (doc) => {
+          currentPost = doc.data();
+          currentPost.comments && setComments(currentPost.comments)
+        });
+      } catch (error) {
+        console.log("error in getDataFromFirestore", error);
+        throw error;
+      }
+    }
+    fetchData();
+  }, []);
+  useEffect(() => {
     if (route.params) {
       setPostFoto(src);
     }
-
-    async function fetchData() {
-      const currentPosts = await getDataFromFirestore();
-      setComments(currentPosts.comments);
-    }
-    fetchData();
   }, [route.params]);
-
-  const getDataFromFirestore = async () => {
-    try {
-      const docRef = doc(db, "posts", id);
-      const snapshot = await getDoc(docRef);
-      const array = snapshot.data();
-      return array;
-    } catch (error) {
-      console.log("error in getDataFromFirestore", error);
-      throw error;
-    }
-  };
 
   const keyboardHidden = () => {
     setIsKeyboardShow(false);
@@ -61,40 +62,35 @@ export const CommentsScreen = ({ route }) => {
     try {
       const ref = doc(db, "posts", id);
 
-    
       const postTime = new Date(Date.now());
 
-     const day = [
-                postTime.getDate(),
-                [
-                  "січня",
-                  "лютого",
-                  "березня",
-                  "квітня",
-                  "травня",
-                  "червня",
-                  "липня",
-                  "серпня",
-                  "вересня",
-                  "жовтня",
-                  "листопада",
-                  "грудня",
-                ][postTime.getMonth()],
-                postTime.getFullYear(),
-              ].join(" ");
+      const day = [
+        postTime.getDate(),
+        [
+          "січня",
+          "лютого",
+          "березня",
+          "квітня",
+          "травня",
+          "червня",
+          "липня",
+          "серпня",
+          "вересня",
+          "жовтня",
+          "листопада",
+          "грудня",
+        ][postTime.getMonth()],
+        postTime.getFullYear(),
+      ].join(" ");
 
-              const time = [
-                postTime.getHours(),
-                
-                postTime.getMinutes(),
-              ].join(":");
+      const time = [postTime.getHours(), postTime.getMinutes()].join(":");
 
-    await updateDoc(ref, {
-      comments: arrayUnion({
-        commentOwner: user.userId,
-        commentText: newComments,
-        day,
-        time,
+      await updateDoc(ref, {
+        comments: arrayUnion({
+          commentOwner: user.userId,
+          commentText: newComments,
+          day,
+          time,
         }),
       });
     } catch (error) {
@@ -202,7 +198,6 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     alignItems: "flex-start",
     justifyContent: "space-between",
-    // flexDirection: 'row',
   },
   userFoto: {
     width: 28,
@@ -215,7 +210,6 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 8,
     backgroundColor: "rgba(0, 0, 0, 0.03)",
-    // borderTopRightRadius: 6,
     borderBottomRightRadius: 6,
     borderBottomLeftRadius: 6,
   },
