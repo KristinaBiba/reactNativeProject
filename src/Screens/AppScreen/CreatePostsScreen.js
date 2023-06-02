@@ -44,7 +44,6 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
 
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
 
-
   useEffect(() => {
     (async () => {
       let { status } = await Camera.requestCameraPermissionsAsync();
@@ -81,7 +80,7 @@ export const CreatePostsScreen = ({ navigation: { goBack } }) => {
           location,
           owner: user.userId,
         });
-        console.log('Document written with ID: ', docRef.id);
+        // console.log('Document written with ID: ', docRef.id);
       } catch (e) {
         console.error('Error adding document: ', e);
           throw e;
@@ -117,10 +116,6 @@ const uploadPhotoToServer = async () => {
   };
 
   const takeFoto = async () => {
-    // if (postFoto) {
-    //   setPostFoto("");
-    //   return;
-    // }
     if (cameraRef) {
       const { uri } = await cameraRef.takePictureAsync();
       setPostFoto(uri);
@@ -142,7 +137,7 @@ const uploadPhotoToServer = async () => {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHidden}>
-      <View style={{ ...styles.body, marginTop: isKeyboardShow ? -180 : 0 }}>
+      <View style={{ ...styles.body, marginTop: isKeyboardShow ? -0 : 0 }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
@@ -155,7 +150,7 @@ const uploadPhotoToServer = async () => {
           </View>
 
           <View style={styles.mainWrap}>
-            <View style={styles.cameraWrap}>
+            <View style={{...styles.cameraWrap, display: isKeyboardShow ? 'none' : 'flex'}}>
               <Camera style={styles.fotoWrap} type={type} ref={setCameraRef}>
                 {postFoto && (
                   <View style={styles.foto}>
@@ -194,7 +189,7 @@ const uploadPhotoToServer = async () => {
                   </TouchableOpacity> */}
             </View>
 
-            <View style={styles.fotoLabel}>
+            <View style={{...styles.fotoLabel, display: isKeyboardShow ? 'none' : 'flex'}}>
               {postFoto !== "" ? (
                 <Text style={styles.fotoLabelText}>Редагувати фото</Text>
               ) : (
@@ -255,7 +250,7 @@ const uploadPhotoToServer = async () => {
           </View>
         </KeyboardAvoidingView>
 
-        {!isKeyboardShow && (
+        
           <View style={styles.footer}>
             <TouchableOpacity
               style={styles.delBtn}
@@ -265,7 +260,7 @@ const uploadPhotoToServer = async () => {
               <Trash />
             </TouchableOpacity>
           </View>
-        )}
+        
       </View>
     </TouchableWithoutFeedback>
   );
@@ -275,7 +270,7 @@ const styles = StyleSheet.create({
   body: {
     height: "100%",
     backgroundColor: "#FFFFFF",
-    justifyContent: "flex-start",
+    justifyContent: 'space-between',
   },
   header: {
     position: "relative",
@@ -302,7 +297,6 @@ const styles = StyleSheet.create({
   mainWrap: {
     flex: 1,
     paddingHorizontal: 16,
-    // paddingBottom: 80,
     justifyContent: "flex-start",
   },
   cameraWrap: {
@@ -310,17 +304,12 @@ const styles = StyleSheet.create({
     height: 240,
     borderRadius: 8,
     marginBottom: 8,
-    // borderWidth: 1,
     borderStyle: "solid",
     borderColor: "#E8E8E8",
   },
   fotoWrap: {
     position: "relative",
     height: 240,
-    // backgroundColor: "#F6F6F6",
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    // borderColor: "#E8E8E8",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -331,20 +320,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    // width: "100%",
-    // height: 240,
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    // borderColor: "#E8E8E8",
-    // borderRadius: 8,
     justifyContent: "center",
-    // alignItems: "center",
   },
   cameraBtn: {
     position: "absolute",
     width: 60,
     height: 60,
-    // backgroundColor: "#FFFFFF",
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
@@ -384,7 +365,6 @@ const styles = StyleSheet.create({
   button: {
     padding: 16,
     height: 50,
-    // backgroundColor: "#F6F6F6",
     borderRadius: 100,
   },
   buttonText: {
@@ -392,14 +372,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
-    // color: "#BDBDBD",
   },
   footer: {
-    position: "absolute",
     width: "100%",
-    bottom: 0,
-    height: 80,
-    paddingTop: 9,
+    marginTop: 9,
     paddingBottom: 25,
     justifyContent: "center",
     alignItems: "center",

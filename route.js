@@ -42,7 +42,7 @@ export const useRoute = (isAuth) => {
 
   return (
 
-    <PostStack.Navigator initialRouteName="Home">
+    <PostStack.Navigator initialRouteName="Home" >
       <PostStack.Screen
         options={{
           headerShown: false,

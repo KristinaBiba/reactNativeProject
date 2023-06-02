@@ -33,9 +33,8 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const handleButtonClick = () => {
-    console.log(`Email: ${email}, Password: ${password}`);
+    // console.log(`Email: ${email}, Password: ${password}`);
     dispatch(logIn({email, password}));
-    // navigation.navigate("Posts");
   };
 
 

@@ -39,9 +39,8 @@ export const RegistrationScreen = () => {
 
   const navigation = useNavigation();
   const handleButtonClick = () => {
-    console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
+    // console.log(`Name: ${name}, Email: ${email}, Password: ${password}`);
     dispatch(register({ name, email, password }));
-    // navigation.navigate("Posts");
   };
 
   return (

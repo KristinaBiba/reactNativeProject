@@ -42,6 +42,7 @@ export const Home = () => {
         component={DefaultScreen}
       />
       <MainTab.Screen
+      
         options={{
           headerShown: false,
           tabBarItemStyle: {

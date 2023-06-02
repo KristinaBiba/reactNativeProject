@@ -112,7 +112,7 @@ export const CommentsScreen = ({ route }) => {
       {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}> */}
       <Image source={{ uri: postFoto }} style={styles.image} />
 
-      <View style={styles.wrap}>
+      <View style={{...styles.wrap, justifyContent: comments.length > 0 ? "space-between" : 'flex-end'}}>
         {comments.length > 0 && (
           <FlatList
             data={comments}
@@ -192,7 +192,6 @@ const styles = StyleSheet.create({
   },
   wrap: {
     flex: 1,
-    justifyContent: "space-between",
   },
   comentWrap: {
     marginBottom: 24,
